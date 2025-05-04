@@ -69,10 +69,13 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
           onPressed: () {
             _loginFormKey.currentState!.validate();
 
-            APIService().loginUser(
-              email: _emailController.text,
-              password: _passwordController.text,
-            ).then(print).catchError(print);
+            APIService()
+                .loginUser(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                )
+                .then(print)
+                .catchError(print);
           },
           child: Text("Login"),
         ),
@@ -139,12 +142,15 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
           onPressed: () {
             _registrationFormKey.currentState!.validate();
 
-            APIService().registerUser(
-              name: _nameController.text,
-              email: _emailController.text,
-              password: _passwordController.text,
-              studentId: _studentIdController.text,
-            ).then(print).catchError(print);
+            APIService()
+                .registerUser(
+                  name: _nameController.text,
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  studentId: _studentIdController.text,
+                )
+                .then(print)
+                .catchError(print);
           },
           child: Text("Register"),
         ),

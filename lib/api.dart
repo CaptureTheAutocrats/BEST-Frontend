@@ -4,29 +4,59 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Product {
+  int productId;
+  int userId;
   String name;
   String? description;
   double price;
   int stock;
   String condition;
   String image;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   Product({
+    required this.productId,
+    required this.userId,
     required this.name,
     this.description,
     required this.price,
     required this.stock,
     required this.condition,
     required this.image,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
+  @override
+  String toString() {
+    return 'Product(id: $productId, name: $name, price: $price, stock: $stock, condition: $condition, createdAt: $createdAt)';
+  }
+
+  Map<String, dynamic> toJson() => {
+    'product_id': productId,
+    'user_id': userId,
+    'name': name,
+    'description': description,
+    'price': price,
+    'stock': stock,
+    'product_condition': condition,
+    'image_path': image,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt.toIso8601String(),
+  };
+
   Product.fromJson(Map<String, dynamic> json)
-    : name = json['name'] as String,
+    : productId = json['product_id'] as int,
+      userId = json['user_id'] as int,
+      name = json['name'] as String,
       description = json['description'] as String?,
-      price = json['price'] as double,
-      stock = json['stock'] as int,
+      price = (json['price'] as num).toDouble(),
+      stock = (json['stock'] as num).toInt(),
       condition = json['product_condition'] as String,
-      image = json['image'] as String;
+      image = json['image_path'] as String,
+      createdAt = DateTime.parse(json['created_at']),
+      updatedAt = DateTime.parse(json['updated_at']);
 }
 
 class APIService {
@@ -116,7 +146,6 @@ class APIService {
       headers: {'User-Agent': 'BESTFontend', 'Authorization': 'Bearer $_token'},
     );
 
-    print(response.body);
     final json = jsonDecode(response.body) as List<dynamic>;
     return json.map((productJson) => Product.fromJson(productJson)).toList();
   }
@@ -150,8 +179,4 @@ class APIService {
 
     return response.statusCode == 201;
   }
-}
-
-void main() {
-  APIService().fetchAllProducts().then(print);
 }

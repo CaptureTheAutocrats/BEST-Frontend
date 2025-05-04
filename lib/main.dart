@@ -1,20 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/screens/login_registration.dart';
 
 import 'screens/product_upload.dart';
 import 'theme.dart';
 
 void main() {
-  runApp(LiveTestApp());
+  runApp(BESTApp());
 }
 
-class LiveTestApp extends StatelessWidget {
-  const LiveTestApp({super.key});
+class BESTApp extends StatelessWidget {
+  const BESTApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    APIService().fetchAllProducts().then(print).catchError(print);
+    APIService()
+        .fetchAllProducts()
+        .then((products) {
+          print(products);
+          print(jsonEncode(products));
+        })
+        .catchError(print);
     return MaterialApp(
       theme: theme,
       home: Scaffold(
