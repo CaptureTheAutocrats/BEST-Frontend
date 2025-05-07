@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
+import 'package:frontend/screens/login_registration.dart';
 
-import 'screens/product_upload.dart';
 import 'theme.dart';
 
 void main() {
@@ -15,23 +12,6 @@ class BESTApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    APIService()
-        .fetchAllProducts()
-        .then((products) {
-          print(products);
-          print(jsonEncode(products));
-        })
-        .catchError(print);
-    return MaterialApp(
-      theme: theme,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
-          centerTitle: true,
-          title: Text("Profile"),
-        ),
-        body: ProductUploadPage(),
-      ),
-    );
+    return MaterialApp(theme: theme, home: LoginRegistrationPage());
   }
 }

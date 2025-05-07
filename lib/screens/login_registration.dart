@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/screens/product_upload.dart';
 
 final _loginFormKey = GlobalKey<FormState>();
 final _registrationFormKey = GlobalKey<FormState>();
@@ -18,33 +19,43 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
   final _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      child: DefaultTabController(
-        length: 2,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 20,
-          children: [
-            const TabBar(
-              labelColor: Colors.blue,
-              unselectedLabelColor: Colors.grey,
-              dividerColor: Colors.transparent,
-              tabs: <Tab>[Tab(text: "Login"), Tab(text: "Registration")],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: <Form>[_buildLoginForm(), _buildRegistrationForm()],
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.lightBlue,
+      centerTitle: true,
+      title: Text("Upload a Product"),
+    ),
+    body: Center(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        child: DefaultTabController(
+          length: 2,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 20,
+            children: [
+              const TabBar(
+                labelColor: Colors.blue,
+                unselectedLabelColor: Colors.grey,
+                dividerColor: Colors.transparent,
+                tabs: <Tab>[Tab(text: "Login"), Tab(text: "Registration")],
               ),
-            ),
-          ],
+              Expanded(
+                child: TabBarView(
+                  children: <Form>[
+                    _buildLoginForm(context),
+                    _buildRegistrationForm(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ),
   );
 
-  Form _buildLoginForm() => Form(
+  Form _buildLoginForm(BuildContext context) => Form(
     key: _loginFormKey,
     child: Column(
       spacing: 16,
@@ -83,7 +94,7 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
     ),
   );
 
-  Form _buildRegistrationForm() => Form(
+  Form _buildRegistrationForm(BuildContext context) => Form(
     key: _registrationFormKey,
     child: Column(
       spacing: 16,
@@ -149,7 +160,15 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   password: _passwordController.text,
                   studentId: _studentIdController.text,
                 )
-                .then(print)
+                .then((success) {
+                  if (!success) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProductUploadPage(),
+                    ),
+                  );
+                })
                 .catchError(print);
           },
           child: Text("Register"),
