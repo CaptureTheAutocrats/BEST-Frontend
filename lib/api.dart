@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,7 +79,11 @@ class APIService {
           _sharedPreferences = pref;
           _token = pref.getString("api-token");
         })
-        .catchError(print);
+        .catchError((err) {
+          if (kDebugMode) {
+            print(err);
+          }
+        });
   }
 
   factory APIService() {
@@ -105,12 +110,23 @@ class APIService {
       }),
     );
 
-    if (response.statusCode != 200) return false;
+    if (response.statusCode != 200) {
+      if (kDebugMode) {
+        print("${response.statusCode} - ${response.body}");
+      }
+      return false;
+    }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
     final newToken = json['token'] as String?;
 
-    if (newToken == null) return false;
+    if (newToken == null) {
+      if (kDebugMode) {
+        print(json);
+      }
+      return false;
+    }
+
     await _setToken(newToken);
 
     return true;
@@ -157,6 +173,7 @@ class APIService {
     required String productCondition,
     required int stock,
     required String base64Image,
+    required String imageExtension,
   }) async {
     final jsonBody = jsonEncode({
       'name': name,
@@ -165,6 +182,7 @@ class APIService {
       'product_condition': productCondition,
       'stock': stock,
       'image': base64Image,
+      'image_ext': imageExtension,
     });
 
     final response = await http.post(
@@ -176,6 +194,12 @@ class APIService {
       },
       body: jsonBody,
     );
+
+    if (response.statusCode != 201) {
+      if (kDebugMode) {
+        print("${response.statusCode} - ${response.body}");
+      }
+    }
 
     return response.statusCode == 201;
   }

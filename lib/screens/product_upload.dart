@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/api.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
+import 'package:path/path.dart' as path;
 
 final _productUploadFormKey = GlobalKey<FormState>();
 
@@ -25,8 +26,9 @@ class ProductUploadPageState extends State<ProductUploadPage> {
   var _productCondition = ProductCondition.New;
 
   String _imagePickerText = "Pick an Image";
+
   Uint8List? _imageBytes;
-  String? _imageMimeType;
+  String _imageExtension = '';
 
   @override
   void initState() {
@@ -39,15 +41,12 @@ class ProductUploadPageState extends State<ProductUploadPage> {
     });
   }
 
-  void _updateImage(String mimeType, Uint8List imageBytes) {
+  void _updateImage(String extension, Uint8List imageBytes) {
     setState(() {
       _imageBytes = imageBytes;
-      _imageMimeType = mimeType;
+      _imageExtension = extension;
     });
   }
-
-  String _getImageBase64Url() =>
-      "data:$_imageMimeType;base64,${base64Encode(_imageBytes as List<int>)}";
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -76,16 +75,13 @@ class ProductUploadPageState extends State<ProductUploadPage> {
                   return;
                 }
 
-                final mimeType = image.mimeType ?? lookupMimeType(image.path);
-                if (mimeType == null) {
-                  _updateImagePickerText(
-                    "Unsupported image type. Select another image.",
-                  );
-                  return;
-                }
+                final extension = path
+                    .extension(image.path)
+                    .replaceFirst('.', '');
 
                 final imageBytes = await image.readAsBytes();
-                _updateImage(mimeType, imageBytes);
+
+                _updateImage(extension, imageBytes);
                 _updateImagePickerText("Selected: $image.path");
               },
               child: Container(
@@ -211,10 +207,15 @@ class ProductUploadPageState extends State<ProductUploadPage> {
                       name: _nameController.text,
                       description: _descriptionController.text,
                       productCondition: _productCondition.name,
-                      base64Image: _getImageBase64Url(),
+                      base64Image: base64Encode(_imageBytes as List<int>),
+                      imageExtension: _imageExtension,
                     )
-                    .then(print)
-                    .catchError(print);
+                    .then((err) {
+                      if (kDebugMode) print(err);
+                    })
+                    .catchError((err) {
+                      if (kDebugMode) print(err);
+                    });
               },
               child: Text("Upload"),
             ),

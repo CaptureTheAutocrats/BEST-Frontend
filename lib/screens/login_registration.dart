@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/screens/product_upload.dart';
@@ -85,8 +86,18 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   email: _emailController.text,
                   password: _passwordController.text,
                 )
-                .then(print)
-                .catchError(print);
+                .then((success) {
+                  if (!success || !context.mounted) return;
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ProductUploadPage(),
+                    ),
+                  );
+                })
+                .catchError((err) {
+                  if (kDebugMode) print(err);
+                });
           },
           child: Text("Login"),
         ),
@@ -161,15 +172,17 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   studentId: _studentIdController.text,
                 )
                 .then((success) {
-                  if (!success) return;
-                  Navigator.push(
-                    context,
+                  if (!success || !context.mounted) return;
+
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const ProductUploadPage(),
                     ),
                   );
                 })
-                .catchError(print);
+                .catchError((err) {
+                  if (kDebugMode) print(err);
+                });
           },
           child: Text("Register"),
         ),
