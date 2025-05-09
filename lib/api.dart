@@ -113,6 +113,8 @@ class APIService {
         (_tokenExpiresAt?.isAfter(DateTime.now()) ?? false);
   }
 
+  String getBaseURL() => _baseUrl;
+
   Future<bool> registerUser({
     required String name,
     required String email,

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/screens/product_upload.dart';
+import 'package:frontend/screens/home.dart';
 
 final _loginFormKey = GlobalKey<FormState>();
 final _registrationFormKey = GlobalKey<FormState>();
@@ -10,10 +10,10 @@ class LoginRegistrationPage extends StatefulWidget {
   const LoginRegistrationPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => LoginRegistrationPageState();
+  State<StatefulWidget> createState() => _LoginRegistrationPageState();
 }
 
-class LoginRegistrationPageState extends State<LoginRegistrationPage> {
+class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _studentIdController = TextEditingController();
@@ -30,7 +30,7 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
   void _navigateHome() {
     if (!context.mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const ProductUploadPage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
@@ -50,38 +50,31 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
       title: Text("Login / Registration"),
     ),
     body: Center(
-      child:
-          !_loginCheckDone
-              ? CircularProgressIndicator()
-              : Container(
-                padding: const EdgeInsets.all(20),
-                child: DefaultTabController(
-                  length: 2,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 20,
-                    children: [
-                      const TabBar(
-                        labelColor: Colors.blue,
-                        unselectedLabelColor: Colors.grey,
-                        dividerColor: Colors.transparent,
-                        tabs: <Tab>[
-                          Tab(text: "Login"),
-                          Tab(text: "Registration"),
-                        ],
-                      ),
-                      Expanded(
-                        child: TabBarView(
-                          children: <Form>[
-                            _buildLoginForm(),
-                            _buildRegistrationForm(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+      child: !_loginCheckDone ? CircularProgressIndicator() : _mainView(),
+    ),
+  );
+
+  Container _mainView() => Container(
+    padding: const EdgeInsets.all(20),
+    child: DefaultTabController(
+      length: 2,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 20,
+        children: [
+          const TabBar(
+            labelColor: Colors.blue,
+            unselectedLabelColor: Colors.grey,
+            dividerColor: Colors.transparent,
+            tabs: <Tab>[Tab(text: "Login"), Tab(text: "Registration")],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: <Form>[_buildLoginForm(), _buildRegistrationForm()],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 

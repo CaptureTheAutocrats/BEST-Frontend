@@ -15,10 +15,10 @@ class ProductUploadPage extends StatefulWidget {
   const ProductUploadPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => ProductUploadPageState();
+  State<StatefulWidget> createState() => _ProductUploadPageState();
 }
 
-class ProductUploadPageState extends State<ProductUploadPage> {
+class _ProductUploadPageState extends State<ProductUploadPage> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
@@ -75,10 +75,7 @@ class ProductUploadPageState extends State<ProductUploadPage> {
                   return;
                 }
 
-                final extension = path
-                    .extension(image.path)
-                    .replaceFirst('.', '');
-
+                final extension = path.extension(image.path);
                 final imageBytes = await image.readAsBytes();
 
                 _updateImage(extension, imageBytes);

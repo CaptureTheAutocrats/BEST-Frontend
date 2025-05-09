@@ -40,4 +40,19 @@ var theme = ThemeData(
     selectionColor: Colors.teal[100],
     selectionHandleColor: Colors.teal,
   ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    showSelectedLabels: true,
+    showUnselectedLabels: true,
+    type: BottomNavigationBarType.fixed,
+    unselectedItemColor: Colors.grey,
+    selectedItemColor: Colors.black87,
+    unselectedLabelStyle: TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.w600,
+    ),
+    selectedLabelStyle: TextStyle(
+      color: Colors.black87,
+      fontWeight: FontWeight.w600,
+    ),
+  ),
 );
