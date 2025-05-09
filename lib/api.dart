@@ -63,31 +63,54 @@ class Product {
 class APIService {
   final String _baseUrl = 'https://catchmeifyoucan.xyz/best';
   static String? _token;
+  DateTime? _tokenExpiresAt;
   static SharedPreferences? _sharedPreferences;
 
-  Future<void> _setToken(String newToken) async {
+  Future<void> _setToken(String newToken, int expiresAt) async {
     _sharedPreferences ??= await SharedPreferences.getInstance();
     _sharedPreferences!.setString("api-token", newToken);
+    _sharedPreferences!.setInt("api-token-expires-at", expiresAt);
     _token = newToken;
+    _tokenExpiresAt = DateTime.fromMillisecondsSinceEpoch(
+      expiresAt * 1000,
+      isUtc: true,
+    );
   }
+
+  Future<void> _refreshTokenFromSharedPreferences() =>
+      SharedPreferences.getInstance()
+          .then((pref) {
+            _sharedPreferences = pref;
+            _token = pref.getString("api-token");
+            int? expiresAt = pref.getInt("api-token-expires-at");
+            if (expiresAt != null) {
+              _tokenExpiresAt = DateTime.fromMillisecondsSinceEpoch(
+                expiresAt * 1000,
+                isUtc: true,
+              );
+            }
+          })
+          .catchError((err) {
+            if (kDebugMode) {
+              print(err);
+            }
+          });
 
   static final APIService _apiService = APIService._();
 
   APIService._() {
-    SharedPreferences.getInstance()
-        .then((pref) {
-          _sharedPreferences = pref;
-          _token = pref.getString("api-token");
-        })
-        .catchError((err) {
-          if (kDebugMode) {
-            print(err);
-          }
-        });
+    _refreshTokenFromSharedPreferences();
   }
 
   factory APIService() {
     return _apiService;
+  }
+
+  Future<bool> isLoggedIn() async {
+    if (_sharedPreferences == null) await _refreshTokenFromSharedPreferences();
+    return _token != null &&
+        _tokenExpiresAt != null &&
+        (_tokenExpiresAt?.isAfter(DateTime.now()) ?? false);
   }
 
   Future<bool> registerUser({
@@ -118,17 +141,10 @@ class APIService {
     }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final newToken = json['token'] as String?;
+    final newToken = json['token'] as String;
+    final newExpiresAt = json['tokenExpiresAt'] as int;
 
-    if (newToken == null) {
-      if (kDebugMode) {
-        print(json);
-      }
-      return false;
-    }
-
-    await _setToken(newToken);
-
+    await _setToken(newToken, newExpiresAt);
     return true;
   }
 
@@ -148,11 +164,10 @@ class APIService {
     if (response.statusCode != 200) return false;
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final newToken = json['token'] as String?;
+    final newToken = json['token'] as String;
+    final newExpiresAt = json['tokenExpiresAt'] as int;
 
-    if (newToken == null) return false;
-    await _setToken(newToken);
-
+    await _setToken(newToken, newExpiresAt);
     return true;
   }
 

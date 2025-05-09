@@ -19,44 +19,73 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
   final _studentIdController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _loginCheckDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  void _navigateHome() {
+    if (!context.mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const ProductUploadPage()),
+    );
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final isLoggedIn = await APIService().isLoggedIn();
+    setState(() {
+      _loginCheckDone = true;
+    });
+    if (isLoggedIn) _navigateHome();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       backgroundColor: Colors.lightBlue,
       centerTitle: true,
-      title: Text("Upload a Product"),
+      title: Text("Login / Registration"),
     ),
     body: Center(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: DefaultTabController(
-          length: 2,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 20,
-            children: [
-              const TabBar(
-                labelColor: Colors.blue,
-                unselectedLabelColor: Colors.grey,
-                dividerColor: Colors.transparent,
-                tabs: <Tab>[Tab(text: "Login"), Tab(text: "Registration")],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: <Form>[
-                    _buildLoginForm(context),
-                    _buildRegistrationForm(context),
-                  ],
+      child:
+          !_loginCheckDone
+              ? CircularProgressIndicator()
+              : Container(
+                padding: const EdgeInsets.all(20),
+                child: DefaultTabController(
+                  length: 2,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 20,
+                    children: [
+                      const TabBar(
+                        labelColor: Colors.blue,
+                        unselectedLabelColor: Colors.grey,
+                        dividerColor: Colors.transparent,
+                        tabs: <Tab>[
+                          Tab(text: "Login"),
+                          Tab(text: "Registration"),
+                        ],
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          children: <Form>[
+                            _buildLoginForm(),
+                            _buildRegistrationForm(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
     ),
   );
 
-  Form _buildLoginForm(BuildContext context) => Form(
+  Form _buildLoginForm() => Form(
     key: _loginFormKey,
     child: Column(
       spacing: 16,
@@ -87,13 +116,8 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   password: _passwordController.text,
                 )
                 .then((success) {
-                  if (!success || !context.mounted) return;
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ProductUploadPage(),
-                    ),
-                  );
+                  if (!success) return;
+                  _navigateHome();
                 })
                 .catchError((err) {
                   if (kDebugMode) print(err);
@@ -105,7 +129,7 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
     ),
   );
 
-  Form _buildRegistrationForm(BuildContext context) => Form(
+  Form _buildRegistrationForm() => Form(
     key: _registrationFormKey,
     child: Column(
       spacing: 16,
@@ -172,13 +196,8 @@ class LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   studentId: _studentIdController.text,
                 )
                 .then((success) {
-                  if (!success || !context.mounted) return;
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ProductUploadPage(),
-                    ),
-                  );
+                  if (!success) return;
+                  _navigateHome();
                 })
                 .catchError((err) {
                   if (kDebugMode) print(err);
