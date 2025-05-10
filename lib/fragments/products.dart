@@ -60,7 +60,9 @@ class _ProductsGridState extends State<ProductsGrid> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Product Image
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(
@@ -68,18 +70,20 @@ class _ProductsGridState extends State<ProductsGrid> {
               ),
               child: Image.network(
                 "${APIService().getBaseURL()}/${product.image}",
-                fit: BoxFit.cover,
-                height: 40,
+                fit: BoxFit.fitWidth,
+                height: 500,
                 errorBuilder: (context, error, stackTrace) {
                   if (kDebugMode) {
                     print(error);
                     print(stackTrace);
                   }
-                  return const Icon(Icons.broken_image);
+                  return const Center(child: Icon(Icons.broken_image));
                 },
               ),
             ),
           ),
+
+          // Product Info
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -92,33 +96,78 @@ class _ProductsGridState extends State<ProductsGrid> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
+
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 13, color: Colors.black87),
+                    children: [
+                      TextSpan(
+                        text: '৳ ',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${product.price.toStringAsFixed(0)}  ',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: Icon(
+                          Icons.inventory_2_rounded,
+                          size: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' Stock: ${product.stock}',
+                        style: const TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 Text(
-                  '৳ ${product.price.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  "Condition: ${product.condition}",
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    minimumSize: const Size.fromHeight(36),
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade600,
+                      foregroundColor: Colors.white,
+                      elevation: 4,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      alignment: Alignment.center,
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    // TODO: Add to cart functionality
-                  },
-                  icon: const Icon(Icons.shopping_bag, size: 16),
-                  label: const Text(
-                    "Add to cart",
-                    style: TextStyle(fontSize: 12),
+                    onPressed: () {
+                      // TODO: Add to cart functionality
+                    },
+                    icon: const Icon(Icons.shopping_bag_outlined, size: 18),
+                    label: const Text("Add to Cart"),
                   ),
                 ),
               ],
