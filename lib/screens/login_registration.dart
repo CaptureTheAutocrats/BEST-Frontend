@@ -1,7 +1,8 @@
+import 'package:best_frontend/api.dart';
+import 'package:best_frontend/screens/home.dart';
+import 'package:best_frontend/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/screens/home.dart';
 
 final _loginFormKey = GlobalKey<FormState>();
 final _registrationFormKey = GlobalKey<FormState>();
@@ -109,11 +110,25 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   password: _passwordController.text,
                 )
                 .then((success) {
-                  if (!success) return;
+                  if (!success) {
+                    showSnackbar(
+                      context: context,
+                      color: Colors.red,
+                      icon: Icons.error,
+                      message: "Registration failed! Kindly review your data.",
+                    );
+                    return;
+                  }
                   _navigateHome();
                 })
                 .catchError((err) {
                   if (kDebugMode) print(err);
+                  showSnackbar(
+                    context: context,
+                    color: Colors.red,
+                    icon: Icons.error,
+                    message: "Error: ${err.toString()}",
+                  );
                 });
           },
           child: Text("Login"),
@@ -189,11 +204,25 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
                   studentId: _studentIdController.text,
                 )
                 .then((success) {
-                  if (!success) return;
+                  if (!success) {
+                    showSnackbar(
+                      context: context,
+                      color: Colors.red,
+                      icon: Icons.error,
+                      message: "Registration failed! Kindly review your data.",
+                    );
+                    return;
+                  }
                   _navigateHome();
                 })
                 .catchError((err) {
                   if (kDebugMode) print(err);
+                  showSnackbar(
+                    context: context,
+                    color: Colors.red,
+                    icon: Icons.error,
+                    message: "Error: ${err.toString()}",
+                  );
                 });
           },
           child: Text("Register"),

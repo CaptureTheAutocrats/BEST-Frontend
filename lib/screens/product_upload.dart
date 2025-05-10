@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:best_frontend/api.dart';
+import 'package:best_frontend/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/api.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -207,11 +208,22 @@ class _ProductUploadPageState extends State<ProductUploadPage> {
                       base64Image: base64Encode(_imageBytes as List<int>),
                       imageExtension: _imageExtension,
                     )
-                    .then((err) {
-                      if (kDebugMode) print(err);
+                    .then((result) {
+                      if (kDebugMode) print(result);
+                      showSnackbar(
+                        context: context,
+                        color: Colors.green,
+                        icon: Icons.check_circle,
+                        message: "Upload successful!",
+                      );
                     })
                     .catchError((err) {
                       if (kDebugMode) print(err);
+                      showSnackbar(
+                        context: context,
+                        icon: Icons.check_circle,
+                        message: "Upload failed. Reason: ${err.toString()}!",
+                      );
                     });
               },
               child: Text("Upload"),

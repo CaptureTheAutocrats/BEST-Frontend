@@ -1,5 +1,5 @@
+import 'package:best_frontend/screens/login_registration.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/login_registration.dart';
 
 import 'theme.dart';
 

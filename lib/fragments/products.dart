@@ -1,6 +1,6 @@
+import 'package:best_frontend/api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
 
 class ProductsGrid extends StatefulWidget {
   const ProductsGrid({super.key});

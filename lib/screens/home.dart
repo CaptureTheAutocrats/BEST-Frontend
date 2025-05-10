@@ -1,6 +1,6 @@
+import 'package:best_frontend/fragments/products.dart';
+import 'package:best_frontend/screens/product_upload.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/fragments/products.dart';
-import 'package:frontend/screens/product_upload.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
