@@ -16,7 +16,7 @@ class LoginRegistrationPage extends StatefulWidget {
 
 class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
   final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _studentIdController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -85,10 +85,10 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
       spacing: 16,
       children: [
         TextFormField(
-          controller: _emailController,
+          controller: _phoneController,
           decoration: InputDecoration(
-            labelText: "Email",
-            hintText: "Enter your email",
+            labelText: "Phone",
+            hintText: "Enter your phone number",
           ),
           keyboardType: TextInputType.emailAddress,
         ),
@@ -106,7 +106,7 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
 
             APIService()
                 .loginUser(
-                  email: _emailController.text,
+                  phone: _phoneController.text,
                   password: _passwordController.text,
                 )
                 .then((success) {
@@ -164,10 +164,10 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
           ),
         ),
         TextFormField(
-          controller: _emailController,
+          controller: _phoneController,
           decoration: InputDecoration(
-            labelText: "Email",
-            hintText: "Enter your email",
+            labelText: "Phone",
+            hintText: "Enter your phone number",
           ),
           keyboardType: TextInputType.emailAddress,
         ),
@@ -199,7 +199,7 @@ class _LoginRegistrationPageState extends State<LoginRegistrationPage> {
             APIService()
                 .registerUser(
                   name: _nameController.text,
-                  email: _emailController.text,
+                  phone: _phoneController.text,
                   password: _passwordController.text,
                   studentId: _studentIdController.text,
                 )

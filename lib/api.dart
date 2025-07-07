@@ -61,7 +61,7 @@ class Product {
 }
 
 class APIService {
-  final String _baseUrl = 'https://catchmeifyoucan.xyz/best';
+  final String _baseUrl = 'https://catchmeifyoucan.xyz/distributed-best';
   static String? _token;
   DateTime? _tokenExpiresAt;
   static SharedPreferences? _sharedPreferences;
@@ -117,7 +117,7 @@ class APIService {
 
   Future<bool> registerUser({
     required String name,
-    required String email,
+    required String phone,
     required String password,
     required String studentId,
   }) async {
@@ -129,7 +129,7 @@ class APIService {
       },
       body: jsonEncode({
         'name': name,
-        'email': email,
+        'phone_number': phone,
         'password': password,
         'student_id': studentId,
       }),
@@ -151,7 +151,7 @@ class APIService {
   }
 
   Future<bool> loginUser({
-    required String email,
+    required String phone,
     required String password,
   }) async {
     final response = await http.post(
@@ -160,7 +160,7 @@ class APIService {
         'Content-Type': 'application/json',
         'User-Agent': 'BESTFrontend',
       },
-      body: jsonEncode({'email': email, 'password': password}),
+      body: jsonEncode({'phone_number': phone, 'password': password}),
     );
 
     if (response.statusCode != 200) return false;
